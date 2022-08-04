@@ -7,7 +7,7 @@
             "RistekUSDI\\Kisara\\": "src/"
         },
         "files": [
-            "src/helpers.php"
+            "helpers.php"
         ]
     },
     "license": "MIT",
