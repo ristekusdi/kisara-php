@@ -1,0 +1,25 @@
+{
+    "name": "ristekusdi/kisara-php",
+    "description": "Keycloak Service Account library using PHP",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "RistekUSDI\\Kisara\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Riset dan Teknologi USDI",
+            "email": "usdi@unud.ac.id"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": "^7.2|^8.0"
+    }
+}
