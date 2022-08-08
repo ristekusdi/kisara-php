@@ -8,30 +8,18 @@ class Key extends Base
 {
     public function get()
     {
-        $curl = curl_init();
-        
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => $this->getAdminRealmUrl()."/keys",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
+        $url = $this->getAdminRealmUrl()."/keys";
+
+        $response = curl_request($url, array(
+            'header' => array(
                 'Authorization: Bearer '.$this->getToken()
             ),
         ));
 
-        $response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
-
         $result = [];
 
-        if ($httpcode === 200) {
-            $result = json_decode($response, true);
+        if ($response['code'] === 200) {
+            $result = json_decode($response['body'], true);
         }
 
         return $result;

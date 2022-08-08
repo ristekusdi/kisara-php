@@ -17,3 +17,45 @@ if (! function_exists('flatten_groups')) {
         return $result;
     }
 }
+
+if (! function_exists('curl_request')) {
+    function curl_request($url, $params, $method = 'GET')
+    {
+        $curl = curl_init();
+
+        $array_setopt = [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => $method,
+        ];
+
+        if (isset($params['header'])) {
+            $array_setopt[CURLOPT_HTTPHEADER] = $params['header'];
+        }
+        
+        if (isset($params['user_pwd'])) {
+            $array_setopt[CURLOPT_USERPWD] = $params['user_pwd'];
+        }
+
+        if (isset($params['body'])) {
+            $array_setopt[CURLOPT_POSTFIELDS] = $params['body'];
+        }
+
+        curl_setopt_array($curl, $array_setopt);
+
+        $body = curl_exec($curl);
+        $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        
+        curl_close($curl);
+
+        return [
+            'body' => $body,
+            'code' => $code
+        ];
+    }
+}

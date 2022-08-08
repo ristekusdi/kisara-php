@@ -9,35 +9,23 @@ class Client extends Base
 
     public function getRaw($params = array())
     {
-        $curl = curl_init();
-
         $query = '';
         if (isset($params)) {
             $query = http_build_query($params);
         }
-        
-        curl_setopt_array($curl, array(
-            CURLOPT_URL =>"{$this->getAdminRealmUrl()}/clients?{$query}",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer '.$this->getToken()
-            ),
-        ));
 
-        $response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
+        $url = "{$this->getAdminRealmUrl()}/clients?{$query}";
+
+        $response = curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.$this->getToken()
+            )
+        ));
 
         $result = [];
 
-        if ($httpcode === 200) {
-            $result = json_decode($response, true);
+        if ($response['code'] === 200) {
+            $result = json_decode($response['body'], true);
         }
 
         return $result;
@@ -68,30 +56,18 @@ class Client extends Base
 
     public function findById($client_id)
     {
-        $curl = curl_init();
-        
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "{$this->getAdminRealmUrl()}/clients/{$client_id}",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer '.$this->getToken()
-            ),
-        ));
+        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}";
 
-        $response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
+        $response = curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.$this->getToken()
+            )
+        ));
 
         $result = [];
 
-        if ($httpcode === 200) {
-            $result = json_decode($response, true);
+        if ($response['code'] === 200) {
+            $result = json_decode($response['body'], true);
         }
 
         return $result;
@@ -99,123 +75,77 @@ class Client extends Base
 
     public function store($data)
     {
-        $curl = curl_init();
-        
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "{$this->getAdminRealmUrl()}/clients",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => json_encode($data),
-            CURLOPT_HTTPHEADER => array(
+        $url = "{$this->getAdminRealmUrl()}/clients";
+
+        $response = curl_request($url, array(
+            'header' => array(
                 'Authorization: Bearer '.$this->getToken(),
                 'Content-Type: application/json'
             ),
-        ));
-
-        $raw_response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
+            'body' => json_encode($data)
+        ), 'POST');
 
         return array(
-            'data' => json_decode($raw_response, true),
-            'code' => (int) $httpcode
+            'data' => json_decode($response['body'], true),
+            'code' => (int) $response['code']
         );
     }
 
     public function update($client_id, $client)
     {
-        $curl = curl_init();
-        
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "{$this->getAdminRealmUrl()}/clients/{$client_id}",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'PUT',
-            CURLOPT_POSTFIELDS => json_encode($client, JSON_UNESCAPED_SLASHES),
-            CURLOPT_HTTPHEADER => array(
+        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}";
+
+        $response = curl_request($url, array(
+            'header' => array(
                 'Authorization: Bearer '.$this->getToken(),
                 'Content-Type: application/json'
             ),
-        ));
-
-        $response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            'body' => json_encode($client, JSON_UNESCAPED_SLASHES),
+        ), 'PUT');
         
         return array(
-            'data' => json_decode($response, true),
-            'code' => (int) $httpcode
+            'data' => json_decode($response['body'], true),
+            'code' => (int) $response['code']
         );
     }
 
     public function delete($client_id)
     {
-        $curl = curl_init();
-        
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "{$this->getAdminRealmUrl()}/clients/{$client_id}",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'DELETE',
-            CURLOPT_HTTPHEADER => array(
+        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}";
+
+        $response = curl_request($url, array(
+            'header' => array(
                 'Authorization: Bearer '.$this->getToken(),
                 'Content-Type: application/json'
             ),
-        ));
+        ), 'DELETE');
 
-        $response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        
         return array(
-            'data' => json_decode($response, true),
-            'code' => (int) $httpcode
+            'data' => json_decode($response['body'], true),
+            'code' => (int) $response['code']
         );
     }
 
     public function getRawRoles($client_id, $params)
     {
-        $curl = curl_init();
-
         $query = '';
 
         if (isset($params)) {
             $query = http_build_query($params);
         }
-        
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "{$this->getAdminRealmUrl()}/clients/{$client_id}/roles?".$query,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer '.$this->getToken()
+
+        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}/roles?{$query}";
+
+        $response = curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.$this->getToken(),
             ),
         ));
 
-        $response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
-
         $result = [];
 
-        if ($httpcode === 200) {
-            $result = json_decode($response, true);
+        if ($response['code'] === 200) {
+            $result = json_decode($response['body'], true);
         }
         
         return $result;
@@ -241,61 +171,37 @@ class Client extends Base
 
     public function storeRole($client_id, $data)
     {
-        $curl = curl_init();
-        
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "{$this->getAdminRealmUrl()}/clients/{$client_id}/roles",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => json_encode($data),
-            CURLOPT_HTTPHEADER => array(
+        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}/roles";
+
+        $response = curl_request($url, array(
+            'header' => array(
                 'Authorization: Bearer '.$this->getToken(),
                 'Content-Type: application/json'
             ),
-        ));
-
-        $raw_response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
+            'body' => json_encode($data),
+        ), 'POST');
 
         return array(
-            'data' => json_decode($raw_response, true),
-            'code' => (int) $httpcode
+            'data' => json_decode($response['body'], true),
+            'code' => (int) $response['code']
         );
     }
 
     public function updateRole($client_id, $role_name, $data)
     {
-        $curl = curl_init();
-        
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "{$this->getAdminRealmUrl()}/clients/{$client_id}/roles/{$role_name}",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'PUT',
-            CURLOPT_POSTFIELDS => json_encode($data),
-            CURLOPT_HTTPHEADER => array(
+        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}/roles/{$role_name}";
+
+        $response = curl_request($url, array(
+            'header' => array(
                 'Authorization: Bearer '.$this->getToken(),
                 'Content-Type: application/json'
             ),
-        ));
-
-        $raw_response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
+            'body' => json_encode($data),
+        ), 'PUT');
 
         return array(
-            'data' => json_decode($raw_response, true),
-            'code' => (int) $httpcode
+            'data' => json_decode($response['body'], true),
+            'code' => (int) $response['code']
         );
     }
 
@@ -306,34 +212,22 @@ class Client extends Base
      */
     public function getUsersInRole($client_id, $role_name, $params = array())
     {
-        $curl = curl_init();
-
         $query = '';
         if (isset($params)) {
             $query = http_build_query($params);
         }
         
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "{$this->getAdminRealmUrl()}/clients/{$client_id}/roles/{$role_name}/users?{$query}",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer '.$this->getToken()
+        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}/roles/{$role_name}/users?{$query}";
+
+        $response = curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.$this->getToken(),
             ),
         ));
-
-        $response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
-
+        
         $result = [];
-        if ($httpcode === 200) {
-            $result = json_decode($response, true);
+        if ($response['code'] === 200) {
+            $result = json_decode($response['body'], true);
         }
 
         return $result;
@@ -341,34 +235,22 @@ class Client extends Base
 
     public function getServiceAccountUser($client_id)
     {
-        $curl = curl_init();
-
         $query = '';
         if (isset($params)) {
             $query = http_build_query($params);
         }
-        
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "{$this->getAdminRealmUrl()}/clients/{$client_id}/service-account-user",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer '.$this->getToken()
+
+        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}/service-account-user";
+
+        $response = curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.$this->getToken(),
             ),
         ));
 
-        $response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
-
         return array(
-            'data' => json_decode($response, true),
-            'code' => (int) $httpcode
+            'data' => json_decode($response['body'], true),
+            'code' => (int) $response['code']
         );
     }
 }

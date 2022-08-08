@@ -8,38 +8,26 @@ class User extends Base
 {
     public function get($params = array())
     {
-        $curl = curl_init();
-
         $query = '';
         if (isset($params)) {
             $query = http_build_query($params);
         }
 
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "{$this->getAdminRealmUrl()}/users?{$query}",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
+        $url = "{$this->getAdminRealmUrl()}/users?{$query}";
+
+        $response = curl_request($url, array(
+            'header' => array(
                 'Authorization: Bearer '.$this->getToken()
             ),
         ));
 
-        $response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
+        $result = [];
 
-        $users = [];
-
-        if ($httpcode === 200) {
-            $users = json_decode($response, true);
+        if ($response['code'] === 200) {
+            $result = json_decode($response['body'], true);
         }
 
-        return $users;
+        return $result;
     }
 
     public function getImpersonateUrl($data)
@@ -64,87 +52,49 @@ class User extends Base
 
     public function store($data)
     {
-        $curl = curl_init();
-        
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "{$this->getAdminRealmUrl()}/users",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => json_encode($data),
-            CURLOPT_HTTPHEADER => array(
+        $url = "{$this->getAdminRealmUrl()}/users";
+
+        $response = curl_request($url, array(
+            'header' => array(
                 'Authorization: Bearer '.$this->getToken(),
                 'Content-Type: application/json'
             ),
-        ));
+            'body' => json_encode($data),
+        ), 'POST');
 
-        $response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
-
-        return array($response, $httpcode);
+        return $response;
     }
 
     public function update($user_id, $data)
     {
-        $curl = curl_init();
-        
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "{$this->getAdminRealmUrl()}/users/{$user_id}",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'PUT',
-            CURLOPT_POSTFIELDS => json_encode($data),
-            CURLOPT_HTTPHEADER => array(
+        $url = "{$this->getAdminRealmUrl()}/users/{$user_id}";
+
+        $response = curl_request($url, array(
+            'header' => array(
                 'Authorization: Bearer '.$this->getToken(),
                 'Content-Type: application/json'
             ),
-        ));
+            'body' => json_encode($data),
+        ), 'PUT');
 
-        $response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
-
-        return array(
-            'data' => json_decode($response, true),
-            'code' => (int) $httpcode
-        );
+        $response['body'] = json_decode($response['body'], true);
+        return $response;
     }
 
     public function getRawAvailableRoles($user_id, $client_id)
     {
-        $curl = curl_init();
-        
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "{$this->getAdminRealmUrl()}/users/{$user_id}/role-mappings/clients/{$client_id}/available",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
+        $url = "{$this->getAdminRealmUrl()}/users/{$user_id}/role-mappings/clients/{$client_id}/available";
+
+        $response = curl_request($url, array(
+            'header' => array(
                 'Authorization: Bearer '.$this->getToken()
             ),
         ));
 
-        $response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
-
         $result = [];
 
-        if ($httpcode === 200) {
-            $result = json_decode($response, true);
+        if ($response['code'] === 200) {
+            $result = json_decode($response['body'], true);
         }
 
         return $result;
@@ -168,30 +118,18 @@ class User extends Base
 
     public function getAssignedRoles($user_id, $client_id)
     {
-        $curl = curl_init();
-        
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "{$this->getAdminRealmUrl()}/users/{$user_id}/role-mappings/clients/{$client_id}",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
+        $url = "{$this->getAdminRealmUrl()}/users/{$user_id}/role-mappings/clients/{$client_id}";
+
+        $response = curl_request($url, array(
+            'header' => array(
                 'Authorization: Bearer '.$this->getToken()
             ),
-        ));
-
-        $response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
+        ), 'GET');
 
         $result = [];
 
-        if ($httpcode === 200) {
-            $result = json_decode($response, true);
+        if ($response['code'] === 200) {
+            $result = json_decode($response['body'], true);
         }
 
         return $result;
@@ -199,30 +137,18 @@ class User extends Base
 
     public function getEffectiveRoles($user_id, $client_id)
     {
-        $curl = curl_init();
-        
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "{$this->getAdminRealmUrl()}/users/{$user_id}/role-mappings/clients/{$client_id}/composite",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
+        $url = "{$this->getAdminRealmUrl()}/users/{$user_id}/role-mappings/clients/{$client_id}/composite";
+
+        $response = curl_request($url, array(
+            'header' => array(
                 'Authorization: Bearer '.$this->getToken()
             ),
         ));
 
-        $response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
-
         $result = [];
 
-        if ($httpcode === 200) {
-            $result = json_decode($response, true);
+        if ($response['code'] === 200) {
+            $result = json_decode($response['body'], true);
         }
 
         return $result;
@@ -230,96 +156,54 @@ class User extends Base
 
     public function storeAssignedClientRoles($user_id, $client_id, $roles)
     {
-        $curl = curl_init();
+        $url = "{$this->getAdminRealmUrl()}/users/{$user_id}/role-mappings/clients/{$client_id}";
         
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "{$this->getAdminRealmUrl()}/users/{$user_id}/role-mappings/clients/{$client_id}",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => json_encode($roles),
-            CURLOPT_HTTPHEADER => array(
+        $response = curl_request($url, array(
+            'header' => array(
                 'Authorization: Bearer '.$this->getToken(),
                 'Content-Type: application/json'
             ),
-        ));
-
-        $response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
-        $result = [];
+            'body' => json_encode($roles),
+        ), 'POST');
         
-        if ($httpcode === 204) {
-            $result = json_decode($response, true);
-        }
+        $response['body'] = json_decode($response['body'], true);
 
-        return array($result, $httpcode);
+        return $response;
     }
 
     public function deleteAssignedClientRoles($user_id, $client_id, $roles)
     {
-        $curl = curl_init();
-        
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "{$this->getAdminRealmUrl()}/users/{$user_id}/role-mappings/clients/{$client_id}",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'DELETE',
-            CURLOPT_POSTFIELDS => json_encode($roles),
-            CURLOPT_HTTPHEADER => array(
+        $url = "{$this->getAdminRealmUrl()}/users/{$user_id}/role-mappings/clients/{$client_id}";
+
+        $response = curl_request($url, array(
+            'header' => array(
                 'Authorization: Bearer '.$this->getToken(),
                 'Content-Type: application/json'
             ),
-        ));
+            'body' => json_encode($roles),
+        ), 'DELETE');
+        
+        $response['body'] = json_decode($response['body'], true);
 
-        $response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
-        $result = [];
-
-        if ($httpcode === 200) {
-            $result = json_decode($response, true);
-        }
-
-        return array($result, $httpcode);
+        return $response;
     }
 
     public function groups($user_id)
     {
-        $curl = curl_init();
+        $url = "{$this->getAdminRealmUrl()}/users/{$user_id}/groups";
 
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "{$this->getAdminRealmUrl()}/users/{$user_id}/groups",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
+        $response = curl_request($url, array(
+            'header' => array(
                 'Authorization: Bearer '.$this->getToken()
             ),
         ));
 
-        $response = curl_exec($curl);
-        $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
-
         $result = [];
 
-        if ($httpcode === 200) {
-            $result = json_decode($response, true);
+        if ($response['code'] === 200) {
+            $response['body'] = json_decode($response['body'], true);
         }
 
-        return $result;
+        return $response['body'];
     }
 }
