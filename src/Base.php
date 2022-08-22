@@ -20,7 +20,6 @@ class Base
         $this->realm = $config['realm'];
         $this->client_id = $config['client_id'];
         $this->client_secret = $config['client_secret'];
-        $this->token = isset($config['token']) ? $config['token'] : null;
     }
 
     public function getAdminRealmUrl()
@@ -60,26 +59,22 @@ class Base
 
     public function getToken()
     {
-        if (!empty($this->token)) {
-            return $this->token;
-        } else {
-            $url = "{$this->getBaseRealmUrl()}/protocol/openid-connect/token";
+        $url = "{$this->getBaseRealmUrl()}/protocol/openid-connect/token";
 
-            $response = curl_request($url, array(
-                'header' => array(
-                    'Content-Type: application/x-www-form-urlencoded',
-                ),
-                'user_pwd' => "{$this->getClientId()}:{$this->getClientSecret()}",
-                'body' => 'grant_type=client_credentials',
-            ), 'POST');
+        $response = curl_request($url, array(
+            'header' => array(
+                'Content-Type: application/x-www-form-urlencoded',
+            ),
+            'user_pwd' => "{$this->getClientId()}:{$this->getClientSecret()}",
+            'body' => 'grant_type=client_credentials',
+        ), 'POST');
 
-            if ($response['code'] === 200) {
-                $decode_response = json_decode($response['body'], true);
-                $access_token = $decode_response['access_token'];
-            }
-
-            return $access_token;
+        if ($response['code'] === 200) {
+            $decode_response = json_decode($response['body'], true);
+            $access_token = $decode_response['access_token'];
         }
+
+        return $access_token;
     }
 
     public function isTokenActive($token)
