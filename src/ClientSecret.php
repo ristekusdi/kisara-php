@@ -16,8 +16,12 @@ class ClientSecret extends Base
             )
         ));
         
+        $result = 0;
         if ((int) $response['code'] === 200) {
-            $result = isset($response['body']) ? json_decode($response['body'], true)['value'] : '';
+            $body = isset($response['body']) ? json_decode($response['body'], true) : '';
+            if (isset($body['value'])) {
+                $result = $body['value'];
+            }
         }
 
         return $result;
@@ -33,8 +37,12 @@ class ClientSecret extends Base
             )
         ), 'POST');
         
+        $result = 0;
         if ((int) $response['code'] === 200) {
-            $result = isset($response['body']) ? json_decode($response['body'], true)['value'] : '';
+            $body = isset($response['body']) ? json_decode($response['body'], true) : '';
+            if (isset($body['value'])) {
+                $result = $body['value'];
+            }
         }
 
         return $result;
