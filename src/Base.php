@@ -22,14 +22,14 @@ class Base
         $this->client_secret = $config['client_secret'];
     }
 
-    public function getAdminRealmUrl()
+    public function getAdminUrl()
     {
-        return "$this->admin_url/admin/realms/{$this->getRealm()}";
+        return $this->admin_url;
     }
 
-    public function getBaseRealmUrl()
+    public function getBaseUrl()
     {
-        return "$this->base_url/realms/{$this->getRealm()}";
+        return $this->base_url;
     }
 
     public function getRealm()
@@ -55,6 +55,16 @@ class Base
     public function getPassword()
     {
         return $this->password;
+    }
+
+    public function getAdminRealmUrl()
+    {
+        return "$this->admin_url/admin/realms/{$this->getRealm()}";
+    }
+
+    public function getBaseRealmUrl()
+    {
+        return "$this->base_url/realms/{$this->getRealm()}";
     }
 
     public function getToken()
