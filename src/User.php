@@ -206,4 +206,20 @@ class User extends Base
 
         return $response['body'];
     }
+
+    public function resetPassword($user_id, $data)
+    {
+        $url = "{$this->getBaseUrl()}/admin/realms/{$this->getRealm()}/users/{$user_id}/reset-password";
+        
+        $response = curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.$this->getToken(),
+                'Content-Type: application/json'
+            ),
+            'body' => json_encode($data),
+        ), 'PUT');
+
+        $response['body'] = json_decode($response['body'], true);
+        return $response;
+    }
 }
