@@ -30,6 +30,26 @@ class User extends Base
         return $result;
     }
 
+    // $user_id = sub
+    public function getById($user_id)
+    {
+        $url = "{$this->getBaseUrl()}/admin/realms/{$this->getRealm()}/users/{$user_id}";
+        
+        $response = curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.$this->getToken()
+            ),
+        ));
+
+        $result = [];
+
+        if ($response['code'] === 200) {
+            $result = json_decode($response['body'], true);
+        }
+
+        return $result;
+    }
+
     public function getImpersonateUrl($data)
     {
         $users = $this->get($data);
