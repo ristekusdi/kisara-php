@@ -30,6 +30,34 @@ class User extends Base
         return $result;
     }
 
+    /**
+     * Count number of users in Keycloak realm
+     * @return integer
+     */
+    public function count($params = array())
+    {
+        $query = '';
+        if (isset($params)) {
+            $query = http_build_query($params);
+        }
+
+        $url = "{$this->getAdminRealmUrl()}/users/count?{$query}";
+
+        $response = curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.$this->getToken()
+            ),
+        ));
+
+        $result = 0;
+
+        if ($response['code'] === 200) {
+            $result = json_decode($response['body'], true);
+        }
+
+        return $result;
+    }
+
     // $user_id = sub
     public function getById($user_id)
     {
