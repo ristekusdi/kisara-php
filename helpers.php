@@ -54,8 +54,8 @@ if (! function_exists('curl_request')) {
         curl_close($curl);
 
         return [
-            'body' => $body,
-            'code' => $code
+            'body' => json_decode($body, true),
+            'code' => (int) $code
         ];
     }
 }

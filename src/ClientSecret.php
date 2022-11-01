@@ -16,15 +16,7 @@ class ClientSecret extends Base
             )
         ));
         
-        $result = 0;
-        if ((int) $response['code'] === 200) {
-            $body = isset($response['body']) ? json_decode($response['body'], true) : '';
-            if (isset($body['value'])) {
-                $result = $body['value'];
-            }
-        }
-
-        return $result;
+        return ($response['code'] === 200) ? $response['body']['value'] : 0;
     }
 
     public function update($client_id)
@@ -37,14 +29,6 @@ class ClientSecret extends Base
             )
         ), 'POST');
         
-        $result = 0;
-        if ((int) $response['code'] === 200) {
-            $body = isset($response['body']) ? json_decode($response['body'], true) : '';
-            if (isset($body['value'])) {
-                $result = $body['value'];
-            }
-        }
-
-        return $result;
+        return ($response['code'] === 200) ? $response['body']['value'] : 0;
     }
 }

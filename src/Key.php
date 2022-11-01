@@ -15,14 +15,8 @@ class Key extends Base
                 'Authorization: Bearer '.$this->getToken()
             ),
         ));
-
-        $result = [];
-
-        if ($response['code'] === 200) {
-            $result = json_decode($response['body'], true);
-        }
-
-        return $result;
+        
+        return ($response['code'] === 200) ? $response['body'] : [];
     }
 
     /**

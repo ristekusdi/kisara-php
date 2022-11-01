@@ -7,12 +7,8 @@ use RistekUSDI\Kisara\Base;
 class User extends Base
 {
     public function get($params = array())
-    {
-        $query = '';
-        if (isset($params)) {
-            $query = http_build_query($params);
-        }
-
+    {   
+        $query = isset($params) ? http_build_query($params) : '';
         $url = "{$this->getAdminRealmUrl()}/users?{$query}";
 
         $response = curl_request($url, array(
@@ -21,13 +17,7 @@ class User extends Base
             ),
         ));
 
-        $result = [];
-
-        if ($response['code'] === 200) {
-            $result = json_decode($response['body'], true);
-        }
-
-        return $result;
+        return ($response['code'] === 200) ? $response['body'] : [];
     }
 
     /**
@@ -36,11 +26,7 @@ class User extends Base
      */
     public function count($params = array())
     {
-        $query = '';
-        if (isset($params)) {
-            $query = http_build_query($params);
-        }
-
+        $query = isset($params) ? http_build_query($params) : '';
         $url = "{$this->getAdminRealmUrl()}/users/count?{$query}";
 
         $response = curl_request($url, array(
@@ -49,13 +35,7 @@ class User extends Base
             ),
         ));
 
-        $result = 0;
-
-        if ($response['code'] === 200) {
-            $result = json_decode($response['body'], true);
-        }
-
-        return $result;
+        return ($response['code'] === 200) ? $response['body'] : 0;
     }
 
     // $user_id = sub
@@ -69,64 +49,33 @@ class User extends Base
             ),
         ));
 
-        $result = [];
-
-        if ($response['code'] === 200) {
-            $result = json_decode($response['body'], true);
-        }
-
-        return $result;
-    }
-
-    public function getImpersonateUrl($data)
-    {
-        $users = $this->get($data);
-        
-        $user_id = (!empty($users)) ? $users[0]['id'] : '';
-
-        if (empty($user_id)) {
-            return response()->json(array(
-                'status' => 'error',
-                'message' => 'Cannot impersonate user because user not found!'
-            ), 401);
-        }
-
-        return response()->json(array(
-            'status' => 'ok',
-            'impersonate_url' => "{$this->getAdminRealmUrl()}/users/{$user_id}/impersonation",
-            'access_token' => $this->getToken()
-        ), 200);
+        return ($response['code'] === 200) ? $response['body'] : [];
     }
 
     public function store($data)
     {
         $url = "{$this->getAdminRealmUrl()}/users";
 
-        $response = curl_request($url, array(
+        return curl_request($url, array(
             'header' => array(
                 'Authorization: Bearer '.$this->getToken(),
                 'Content-Type: application/json'
             ),
             'body' => json_encode($data),
         ), 'POST');
-
-        return $response;
     }
 
     public function update($user_id, $data)
     {
         $url = "{$this->getAdminRealmUrl()}/users/{$user_id}";
 
-        $response = curl_request($url, array(
+        return curl_request($url, array(
             'header' => array(
                 'Authorization: Bearer '.$this->getToken(),
                 'Content-Type: application/json'
             ),
             'body' => json_encode($data),
         ), 'PUT');
-
-        $response['body'] = json_decode($response['body'], true);
-        return $response;
     }
 
     public function getRawAvailableRoles($user_id, $client_id)
@@ -139,13 +88,7 @@ class User extends Base
             ),
         ));
 
-        $result = [];
-
-        if ($response['code'] === 200) {
-            $result = json_decode($response['body'], true);
-        }
-
-        return $result;
+        return ($response['code'] === 200) ? $response['body'] : [];
     }
 
     public function getAvailableRoles($user_id, $client_id)
@@ -174,13 +117,7 @@ class User extends Base
             ),
         ), 'GET');
 
-        $result = [];
-
-        if ($response['code'] === 200) {
-            $result = json_decode($response['body'], true);
-        }
-
-        return $result;
+        return ($response['code'] === 200) ? $response['body'] : [];
     }
 
     public function getEffectiveRoles($user_id, $client_id)
@@ -193,47 +130,33 @@ class User extends Base
             ),
         ));
 
-        $result = [];
-
-        if ($response['code'] === 200) {
-            $result = json_decode($response['body'], true);
-        }
-
-        return $result;
+        return ($response['code'] === 200) ? $response['body'] : [];
     }
 
     public function storeAssignedClientRoles($user_id, $client_id, $roles)
     {
         $url = "{$this->getAdminRealmUrl()}/users/{$user_id}/role-mappings/clients/{$client_id}";
         
-        $response = curl_request($url, array(
+        return curl_request($url, array(
             'header' => array(
                 'Authorization: Bearer '.$this->getToken(),
                 'Content-Type: application/json'
             ),
             'body' => json_encode($roles),
         ), 'POST');
-        
-        $response['body'] = json_decode($response['body'], true);
-
-        return $response;
     }
 
     public function deleteAssignedClientRoles($user_id, $client_id, $roles)
     {
         $url = "{$this->getAdminRealmUrl()}/users/{$user_id}/role-mappings/clients/{$client_id}";
 
-        $response = curl_request($url, array(
+        return curl_request($url, array(
             'header' => array(
                 'Authorization: Bearer '.$this->getToken(),
                 'Content-Type: application/json'
             ),
             'body' => json_encode($roles),
         ), 'DELETE');
-        
-        $response['body'] = json_decode($response['body'], true);
-
-        return $response;
     }
 
     public function groups($user_id)
@@ -246,28 +169,19 @@ class User extends Base
             ),
         ));
 
-        $result = [];
-
-        if ($response['code'] === 200) {
-            $response['body'] = json_decode($response['body'], true);
-        }
-
-        return $response['body'];
+        return ($response['code'] === 200) ? $response['body'] : [];
     }
 
     public function resetPassword($user_id, $data)
     {
         $url = "{$this->getBaseUrl()}/admin/realms/{$this->getRealm()}/users/{$user_id}/reset-password";
         
-        $response = curl_request($url, array(
+        return curl_request($url, array(
             'header' => array(
                 'Authorization: Bearer '.$this->getToken(),
                 'Content-Type: application/json'
             ),
             'body' => json_encode($data),
         ), 'PUT');
-
-        $response['body'] = json_decode($response['body'], true);
-        return $response;
     }
 }

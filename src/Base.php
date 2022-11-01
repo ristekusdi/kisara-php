@@ -11,7 +11,6 @@ class Base
     private $client_secret;
     private $username;
     private $password;
-    private $token;
 
     public function __construct($config = array())
     {
@@ -79,12 +78,7 @@ class Base
             'body' => 'grant_type=client_credentials',
         ), 'POST');
 
-        if ($response['code'] === 200) {
-            $decode_response = json_decode($response['body'], true);
-            $access_token = $decode_response['access_token'];
-        }
-
-        return $access_token;
+        return ($response['code'] === 200) ? $response['body']['access_token'] : '';;
     }
 
     public function isTokenActive($token)
@@ -102,9 +96,8 @@ class Base
         $result = false;
 
         if ($response['code'] === 200) {
-            $decode_response = json_decode($response['body'], true);
-            if (isset($decode_response['active'])) {
-                if ($decode_response['active'] == true) {
+            if (isset($response['body']['active'])) {
+                if ($response['body']['active'] == true) {
                     $result = true;
                 }
             }

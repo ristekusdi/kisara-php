@@ -11,11 +11,7 @@ class Group extends Base
      */
     public function get($params = array())
     {
-        $query = '';
-        if (isset($params)) {
-            $query = http_build_query($params);
-        }
-
+        $query = isset($params) ? http_build_query($params) : '';
         $url = $this->getAdminRealmUrl()."/groups?{$query}";
 
         $response = curl_request($url, array(
@@ -24,13 +20,7 @@ class Group extends Base
             )
         ), 'GET');
 
-        $result = [];
-
-        if ($response['code'] === 200) {
-            $result = json_decode($response['body'], true);
-        }
-
-        return $result;
+        return ($response['code'] === 200) ? $response['body'] : [];
     }
 
     public function findById($id)
@@ -43,13 +33,7 @@ class Group extends Base
             )
         ), 'GET');
 
-        $result = [];
-
-        if ($response['code'] === 200) {
-            $result = json_decode($response['body'], true);
-        }
-
-        return $result;
+        return ($response['code'] === 200) ? $response['body'] : [];
     }
 
     public function store($data)
@@ -87,13 +71,7 @@ class Group extends Base
             ),
         ));
 
-        $result = [];
-
-        if ($response['code'] === 200) {
-            $result = json_decode($response['body'], true);
-        }
-
-        return $result;
+        return ($response['code'] === 200) ? $response['body'] : [];
     }
 
     public function getAvailableRoles($group_id, $client_id)
@@ -122,13 +100,7 @@ class Group extends Base
             ),
         ));
 
-        $result = [];
-
-        if ($response['code'] === 200) {
-            $result = json_decode($response['body'], true);
-        }
-
-        return $result;
+        return ($response['code'] === 200) ? $response['body'] : [];
     }
 
     public function getEffectiveRoles($group_id, $client_id)
@@ -141,67 +113,45 @@ class Group extends Base
             ),
         ));
 
-        $result = [];
-
-        if ($response['code'] === 200) {
-            $result = json_decode($response['body'], true);
-        }
-
-        return $result;
+        return ($response['code'] === 200) ? $response['body'] : [];
     }
 
     public function storeAssignedClientRoles($group_id, $client_id, $roles)
     {
         $url = $this->getAdminRealmUrl()."/groups/{$group_id}/role-mappings/clients/{$client_id}";
 
-        $response = curl_request($url, array(
+        return curl_request($url, array(
             'header' => array(
                 'Authorization: Bearer '.$this->getToken(),
                 'Content-Type: application/json'
             ),
             'body' => json_encode($roles),
         ), 'POST');
-
-        $response['body'] = json_decode($response['body'], true);
-
-        return $response;
     }
 
     public function deleteAssignedClientRoles($group_id, $client_id, $roles)
     {
         $url = $this->getAdminRealmUrl()."/groups/{$group_id}/role-mappings/clients/{$client_id}";
 
-        $response = curl_request($url, array(
+        return curl_request($url, array(
             'header' => array(
                 'Authorization: Bearer '.$this->getToken(),
                 'Content-Type: application/json'
             ),
             'body' => json_encode($roles),
         ), 'DELETE');
-
-        $response['body'] = json_decode($response['body'], true);
-
-        return $response;
     }
 
     public function members($group_id, $params = array())
     {
-        $query = '';
-        if (isset($params)) {
-            $query = http_build_query($params);
-        }
-
+        $query = isset($params) ? http_build_query($params) : '';
         $url = $this->getAdminRealmUrl()."/groups/{$group_id}/members?{$query}";
 
-        $response = curl_request($url, array(
+        return curl_request($url, array(
             'header' => array(
                 'Authorization: Bearer '.$this->getToken()
             )
         ));
-
-        $response['body'] = json_decode($response['body'], true);
-
-        return $response;
     }
 
     /**

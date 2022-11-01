@@ -6,7 +6,7 @@ use RistekUSDI\Kisara\Base;
 
 class Role extends Base
 {
-    public function delete($role_id)
+    public function get($role_id)
     {
         $url =  $this->getAdminRealmUrl()."/roles-by-id/{$role_id}";
 
@@ -15,9 +15,33 @@ class Role extends Base
                 'Authorization: Bearer '.$this->getToken(),
                 'Content-Type: application/json'
             )
-        ), 'DELETE');
+        ));
 
-        $response['body'] = json_decode($response['body'], true);
-        return $response;
+        return ($response['code'] === 200) ? $response['body'] : [];
+    }
+
+    public function update($role_id, $data)
+    {
+        $url =  $this->getAdminRealmUrl()."/roles-by-id/{$role_id}";
+        
+        return curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.$this->getToken(),
+                'Content-Type: application/json'
+            ),
+            'body' => json_encode($data),
+        ), 'PUT');
+    }
+
+    public function delete($role_id)
+    {
+        $url =  $this->getAdminRealmUrl()."/roles-by-id/{$role_id}";
+
+        return curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.$this->getToken(),
+                'Content-Type: application/json'
+            )
+        ), 'DELETE');
     }
 }
