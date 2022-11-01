@@ -153,26 +153,4 @@ class Group extends Base
             )
         ));
     }
-
-    /**
-     * Mendapatkan daftar kelompok berdasarkan role mapping client
-     * @param $role_name, $client_id (id of client NOT client-id)
-     * @return array of groups
-     */
-    public function getRoleMapping($role_name, $client_id)
-    {
-        $groups = flatten_groups($this->get());
-
-        $filtered_groups = [];
-        foreach ($groups as $group) {
-            $assigned_roles = $this->getAssignedRoles($group['id'], $client_id);
-            foreach ($assigned_roles as $assigned_role) {
-                if ($assigned_role['name'] == $role_name) {
-                    $filtered_groups[] = $group;
-                }
-            }
-        }
-        
-        return $filtered_groups;
-    }
 }
