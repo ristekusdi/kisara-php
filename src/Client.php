@@ -184,6 +184,25 @@ class Client extends Base
         return ($response['code'] === 200) ? $response['body'] : [];
     }
 
+    /**
+     * Get groups based on client id and role name
+     * @param $client_id $role_name
+     * @return array of groups
+     */
+    public function getGroupsInRole($client_id, $role_name, $params = array())
+    {
+        $query = isset($params) ? http_build_query($params) : '';
+        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}/roles/{$role_name}/groups?{$query}";
+
+        $response = curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.$this->getToken(),
+            ),
+        ));
+
+        return ($response['code'] === 200) ? $response['body'] : [];
+    }
+
     public function getServiceAccountUser($client_id)
     {
         $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}/service-account-user";
