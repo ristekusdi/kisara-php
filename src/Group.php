@@ -153,4 +153,18 @@ class Group extends Base
             )
         ));
     }
+
+    public function getRoleMappings($group_id)
+    {
+        $url = "{$this->getBaseUrl()}/admin/realms/{$this->getRealm()}/groups/{$group_id}/role-mappings";
+        
+        $response = curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.$this->getToken(),
+                'Content-Type: application/json'
+            ),
+        ), 'GET');
+
+        return ($response['code'] === 200) ? $response['body'] : [];
+    }
 }

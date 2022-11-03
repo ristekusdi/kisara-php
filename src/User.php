@@ -184,4 +184,18 @@ class User extends Base
             'body' => json_encode($data),
         ), 'PUT');
     }
+
+    public function getRoleMappings($user_id)
+    {
+        $url = "{$this->getBaseUrl()}/admin/realms/{$this->getRealm()}/users/{$user_id}/role-mappings";
+        
+        $response = curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.$this->getToken(),
+                'Content-Type: application/json'
+            ),
+        ), 'GET');
+
+        return ($response['code'] === 200) ? $response['body'] : [];
+    }
 }
