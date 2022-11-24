@@ -16,7 +16,14 @@ class ClientSecret extends Base
             )
         ));
         
-        return ($response['code'] === 200) ? $response['body']['value'] : 0;
+        $secret = "";
+        if ($response['code'] === 200) {
+            if (isset($response['body']['value'])) {
+                $secret = $response['body']['value'];
+            }
+        }
+        
+        return $secret;
     }
 
     public function update($client_id)
