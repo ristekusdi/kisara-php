@@ -20,24 +20,6 @@ class User extends Base
         return ($response['code'] === 200) ? $response['body'] : [];
     }
 
-    /**
-     * Count number of users in Keycloak realm
-     * @return integer
-     */
-    public function count($params = array())
-    {
-        $query = isset($params) ? http_build_query($params) : '';
-        $url = "{$this->getAdminRealmUrl()}/users/count?{$query}";
-
-        $response = curl_request($url, array(
-            'header' => array(
-                'Authorization: Bearer '.$this->getToken()
-            ),
-        ));
-
-        return ($response['code'] === 200) ? $response['body'] : 0;
-    }
-
     // $user_id = sub
     public function findById($user_id)
     {
