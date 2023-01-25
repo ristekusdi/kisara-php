@@ -33,31 +33,6 @@ class ClientRole extends Base
         ), 'POST');
     }
 
-    public function findByName($client_id, $role_name)
-    {
-        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}/roles/{$role_name}";
-        
-        return curl_request($url, array(
-            'header' => array(
-                'Authorization: Bearer '.$this->getToken(),
-                'Content-Type: application/json'
-            ),
-        ));
-    }
-
-    public function update($client_id, $role_name, $data)
-    {
-        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}/roles/{$role_name}";
-
-        return curl_request($url, array(
-            'header' => array(
-                'Authorization: Bearer '.$this->getToken(),
-                'Content-Type: application/json'
-            ),
-            'body' => json_encode($data),
-        ), 'PUT');
-    }
-
     /**
      * Get users based on client id and role name
      * @param $client_id $role_name
