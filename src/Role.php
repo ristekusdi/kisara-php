@@ -6,7 +6,7 @@ use RistekUSDI\Kisara\Base;
 
 class Role extends Base
 {
-    public function get($role_id)
+    public function findById($role_id)
     {
         $url =  $this->getAdminRealmUrl()."/roles-by-id/{$role_id}";
 
