@@ -81,4 +81,18 @@ class Client extends Base
             ),
         ));
     }
+
+    public function userSessions($client_id, $params = array())
+    {
+        $query = isset($params) ? http_build_query($params) : '';
+        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}/user-sessions?{$query}";
+
+        $response = curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.$this->getToken()
+            )
+        ));
+
+        return ($response['code'] === 200) ? $response['body'] : [];
+    }
 }
