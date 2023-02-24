@@ -32,7 +32,7 @@ $config = [
 ];
 ```
 
-**Notes:** Admin url and base url in your Keycloak project may same url or maybe different.
+**Notes:** Admin url and base url in your Keycloak may same url or maybe different.
 
 ## Available Classes and Methods
 
@@ -124,6 +124,25 @@ use RistekUSDI\Kisara\Client as KisaraClient;
 (new KisaraClient($config))->getServiceAccountUser($client_id);
 ```
 
+#### userSessions
+
+Get current user sessions that belongs to the client.
+
+```php
+use RistekUSDI\Kisara\Client as KisaraClient;
+
+// Without param
+(new KisaraClient($config))->userSessions($client_id);
+
+$params = [
+    'first' => '0',
+    'max' => '10',
+];
+
+// With params
+(new KisaraClient($config))->userSessions($client_id, $params);
+```
+
 ### ClientRole
 
 #### get
@@ -137,7 +156,7 @@ $params = [
     'first' => '0',
     'max' => '10',
     'search' => 'role name of client',
-]
+];
 
 (new KisaraClientRole($config))->get($client_id, $params);
 ```
@@ -206,6 +225,56 @@ Update client secret of client by id of client NOT clientId.
 use RistekUSDI\Kisara\ClientSecret as KisaraClientSecret;
 
 (new KisaraClientSecret($config))->update($client_id);
+```
+
+### DeviceActivity
+
+#### get
+
+Get list of devices the user is logged on to.
+
+```php
+use RistekUSDI\Kisara\DeviceActivity as KisaraDeviceActivity;
+
+$config = [
+    'base_url' => 'BASE_KEYCLOAK_URL',
+    'realm' => 'KEYCLOAK_REALM',
+    'access_token' => 'ACCESS_TOKEN_FROM_USER',
+];
+
+(new KisaraDeviceActivity($config))->get();
+```
+
+#### endAllSession
+
+End all logged in session from device.
+
+```php
+use RistekUSDI\Kisara\DeviceActivity as KisaraDeviceActivity;
+
+$config = [
+    'base_url' => 'BASE_KEYCLOAK_URL',
+    'realm' => 'KEYCLOAK_REALM',
+    'access_token' => 'ACCESS_TOKEN_FROM_USER',
+];
+
+(new KisaraDeviceActivity($config))->endAllSession();
+```
+
+#### endSession
+
+End logged in session from device by session id.
+
+```php
+use RistekUSDI\Kisara\DeviceActivity as KisaraDeviceActivity;
+
+$config = [
+    'base_url' => 'BASE_KEYCLOAK_URL',
+    'realm' => 'KEYCLOAK_REALM',
+    'access_token' => 'ACCESS_TOKEN_FROM_USER',
+];
+
+(new KisaraDeviceActivity($config))->endSession($session_id);
 ```
 
 ### Group
@@ -399,6 +468,18 @@ Delete a role by id of role.
 use RistekUSDI\Kisara\Role as KisaraRole;
 
 (new KisaraRole($config))->delete($role_id);
+```
+
+### Session
+
+#### delete
+
+Delete session logged in user by session id.
+
+```php
+use RistekUSDI\Kisara\Session as KisaraSession;
+
+(new KisaraSession($config))->delete($session_id);
 ```
 
 ### User
