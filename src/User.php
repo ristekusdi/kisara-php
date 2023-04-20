@@ -131,4 +131,21 @@ class User extends Base
             )
         ), 'POST');
     }
+
+    /**
+     * Get active application session by user access token
+     */
+    public function getActiveAppSessions()
+    {
+        $url = "{$this->getBaseRealmUrl()}/account/applications";
+
+        $response = curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.$this->getToken(),
+                'Content-Type: application/json'
+            ),
+        ), 'GET');
+
+        return ($response['code'] === 200) ? $response['body'] : [];
+    }
 }
