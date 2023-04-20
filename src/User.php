@@ -99,4 +99,36 @@ class User extends Base
 
         return ($response['code'] === 200) ? $response['body'] : [];
     }
+
+    /**
+     * Get user sessions
+     */
+    public function getUserSessions($user_id)
+    {
+        $url = "{$this->getAdminRealmUrl()}/users/{$user_id}/sessions";
+
+        $response = curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.$this->getToken(),
+                'Content-Type: application/json'
+            ),
+        ), 'GET');
+
+        return ($response['code'] === 200) ? $response['body'] : [];
+    }
+
+    /**
+     * Logout user
+     */
+    public function logout($user_id)
+    {
+        $url = "{$this->getAdminRealmUrl()}/users/{$user_id}/logout";
+
+        return curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.$this->getToken(),
+                'Content-Type: application/json'
+            )
+        ), 'POST');
+    }
 }
