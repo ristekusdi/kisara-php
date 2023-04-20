@@ -49,6 +49,19 @@ class Group extends Base
         ), 'POST');
     }
 
+    public function update($id, $data)
+    {
+        $url = "{$this->getAdminRealmUrl()}/groups/$id";
+
+        return curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.$this->getToken(),
+                'Content-Type: application/json'
+            ),
+            'body' => json_encode($data),
+        ), 'PUT');
+    }
+
     public function delete($id)
     {
         $url = "{$this->getAdminRealmUrl()}/groups/{$id}";
