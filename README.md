@@ -16,8 +16,8 @@ In each class, you need to set a config (array value) to get data you need. Here
 
 // First option
 $config = [
-    'admin_url' => 'ADMIN_KEYCLOAK_URL',
-    'base_url' => 'BASE_KEYCLOAK_URL',
+    'admin_url' => 'KEYCLOAK_ADMIN_URL',
+    'base_url' => 'KEYCLOAK_BASE_URL',
     'realm' => 'KEYCLOAK_REALM',
     'client_id' => 'KEYCLOAK_CLIENT_ID',
     'client_secret' => 'KEYCLOAK_CLIENT_SECRET',
@@ -25,8 +25,8 @@ $config = [
 
 // Second option
 $config = [
-    'admin_url' => 'ADMIN_KEYCLOAK_URL',
-    'base_url' => 'BASE_KEYCLOAK_URL',
+    'admin_url' => 'KEYCLOAK_ADMIN_URL',
+    'base_url' => 'KEYCLOAK_BASE_URL',
     'realm' => 'KEYCLOAK_REALM',
     'access_token' => 'ACCESS_TOKEN_FROM_SERVICE_ACCOUNTS_OF_CLIENT',
 ];
