@@ -17,9 +17,9 @@
             "email": "usdi@unud.ac.id"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": "^7.2|^8.0"
+        "php": "^7.4|^8.0"
     }
 }

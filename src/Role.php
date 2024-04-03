@@ -2,17 +2,17 @@
 
 namespace RistekUSDI\Kisara;
 
-use RistekUSDI\Kisara\Base;
+use RistekUSDI\Kisara\Container;
 
-class Role extends Base
+class Role
 {
-    public function findById($role_id)
+    public static function findById($role_id)
     {
-        $url =  $this->getAdminRealmUrl()."/roles-by-id/{$role_id}";
+        $url =  Container::getAdminRealmUrl()."/roles-by-id/{$role_id}";
 
         $response = curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken(),
+                'Authorization: Bearer '.Container::getAccessToken(),
                 'Content-Type: application/json'
             )
         ));
@@ -20,26 +20,26 @@ class Role extends Base
         return ($response['code'] === 200) ? $response['body'] : [];
     }
 
-    public function update($role_id, $data)
+    public static function update($role_id, $data)
     {
-        $url =  $this->getAdminRealmUrl()."/roles-by-id/{$role_id}";
+        $url =  Container::getAdminRealmUrl()."/roles-by-id/{$role_id}";
         
         return curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken(),
+                'Authorization: Bearer '.Container::getAccessToken(),
                 'Content-Type: application/json'
             ),
             'body' => json_encode($data),
         ), 'PUT');
     }
 
-    public function delete($role_id)
+    public static function delete($role_id)
     {
-        $url =  $this->getAdminRealmUrl()."/roles-by-id/{$role_id}";
+        $url =  Container::getAdminRealmUrl()."/roles-by-id/{$role_id}";
 
         return curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken(),
+                'Authorization: Bearer '.Container::getAccessToken(),
                 'Content-Type: application/json'
             )
         ), 'DELETE');

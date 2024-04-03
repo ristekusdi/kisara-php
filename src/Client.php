@@ -2,94 +2,136 @@
 
 namespace RistekUSDI\Kisara;
 
-use RistekUSDI\Kisara\Base;
+use RistekUSDI\Kisara\Container;
 
-class Client extends Base
+class Client
 {
-    public function get($params = array())
+    public static function get($params = array())
     {
         $query = isset($params) ? http_build_query($params) : '';
-        $url = "{$this->getAdminRealmUrl()}/clients?{$query}";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/clients?{$query}";
 
         $response = curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken()
+                'Authorization: Bearer '.Container::getAccessToken()
             )
         ));
 
         return ($response['code'] === 200) ? $response['body'] : [];
     }
 
-    public function findById($client_id)
+    public static function findById($id)
     {
-        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/clients/{$id}";
 
         $response = curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken()
+                'Authorization: Bearer '.Container::getAccessToken()
             )
         ));
 
         return ($response['code'] === 200) ? $response['body'] : [];
     }
 
-    public function store($data)
+    public static function store($data)
     {
-        $url = "{$this->getAdminRealmUrl()}/clients";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/clients";
 
         return curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken(),
+                'Authorization: Bearer '.Container::getAccessToken(),
                 'Content-Type: application/json'
             ),
             'body' => json_encode($data)
         ), 'POST');
     }
 
-    public function update($client_id, $client)
+    public static function update($id, $client)
     {
-        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/clients/{$id}";
 
         return curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken(),
+                'Authorization: Bearer '.Container::getAccessToken(),
                 'Content-Type: application/json'
             ),
             'body' => json_encode($client, JSON_UNESCAPED_SLASHES),
         ), 'PUT');
     }
 
-    public function delete($client_id)
+    public static function delete($id)
     {
-        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/clients/{$id}";
 
         return curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken(),
+                'Authorization: Bearer '.Container::getAccessToken(),
                 'Content-Type: application/json'
             ),
         ), 'DELETE');
     }
 
-    public function getServiceAccountUser($client_id)
+    public function getClientSecret($id)
     {
-        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}/service-account-user";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/clients/{$id}/client-secret";
+
+        $response = curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.Container::getAccessToken()
+            )
+        ));
+        
+        $secret = "";
+        if ($response['code'] === 200) {
+            if (isset($response['body']['value'])) {
+                $secret = $response['body']['value'];
+            }
+        }
+        
+        return $secret;
+    }
+
+    public function updateClientSecret($id)
+    {
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/clients/{$id}/client-secret";
+
+        $response = curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.Container::getAccessToken()
+            )
+        ), 'POST');
+        
+        return ($response['code'] === 200) ? $response['body']['value'] : 0;
+    }
+
+    public static function getServiceAccountUser($id)
+    {
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/clients/{$id}/service-account-user";
 
         return curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken(),
+                'Authorization: Bearer '.Container::getAccessToken(),
             ),
         ));
     }
 
-    public function userSessions($client_id, $params = array())
+    public static function userSessions($id, $params = array())
     {
         $query = isset($params) ? http_build_query($params) : '';
-        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}/user-sessions?{$query}";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/clients/{$id}/user-sessions?{$query}";
 
         $response = curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken()
+                'Authorization: Bearer '.Container::getAccessToken()
             )
         ));
 

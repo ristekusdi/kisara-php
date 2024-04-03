@@ -2,44 +2,47 @@
 
 namespace RistekUSDI\Kisara;
 
-use RistekUSDI\Kisara\Base;
+use RistekUSDI\Kisara\Container;
 
-class DeviceActivity extends Base
+class DeviceActivity
 {
-    public function get()
+    public static function get()
     {
-        $url = "{$this->getBaseRealmUrl()}/account/sessions/devices";
+        $base_realm_url = Container::getBaseRealmUrl();
+        $url = "{$base_realm_url}/account/sessions/devices";
 
         $response = curl_request($url, array(
             'header' => array(
                 'Content-Type: application/json',
-                'Authorization: Bearer '.$this->getToken()
+                'Authorization: Bearer '.Container::getAccessToken()
             )
         ));
         
         return ($response['code'] === 200) ? $response['body'] : [];
     }
 
-    public function endAllSession()
+    public static function endAllSession()
     {
-        $url = "{$this->getBaseRealmUrl()}/account/sessions";
+        $base_realm_url = Container::getBaseRealmUrl();
+        $url = "{$base_realm_url}/account/sessions";
         
         return curl_request($url, array(
             'header' => array(
                 'Content-Type: application/json',
-                'Authorization: Bearer '.$this->getToken(),
+                'Authorization: Bearer '.Container::getAccessToken(),
             )
         ), 'DELETE');
     }
 
-    public function endSession($session_id)
+    public static function endSession($session_id)
     {
-        $url =  "{$this->getBaseRealmUrl()}/account/sessions/{$session_id}";
+        $base_realm_url = Container::getBaseRealmUrl();
+        $url =  "{$base_realm_url}/account/sessions/{$session_id}";
 
         return curl_request($url, array(
             'header' => array(
                 'Content-Type: application/json',
-                'Authorization: Bearer '.$this->getToken(),
+                'Authorization: Bearer '.Container::getAccessToken(),
             )
         ), 'DELETE');
     }

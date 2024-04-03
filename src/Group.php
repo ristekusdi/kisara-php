@@ -2,101 +2,181 @@
 
 namespace RistekUSDI\Kisara;
 
-use RistekUSDI\Kisara\Base;
+use RistekUSDI\Kisara\Container;
 
-class Group extends Base
+class Group
 {
-    /**
-     * Get list of groups
-     */
-    public function get($params = array())
+    public static function get($params = array())
     {
         $query = isset($params) ? http_build_query($params) : '';
-        $url = $this->getAdminRealmUrl()."/groups?{$query}";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/groups?{$query}";
 
         $response = curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken()
+                'Authorization: Bearer '.Container::getAccessToken()
             )
         ), 'GET');
 
         return ($response['code'] === 200) ? $response['body'] : [];
     }
 
-    public function findById($id)
+    public static function findById($id)
     {
-        $url = "{$this->getAdminRealmUrl()}/groups/{$id}";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/groups/{$id}";
 
         $response = curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken()
+                'Authorization: Bearer '.Container::getAccessToken()
             )
         ), 'GET');
 
         return ($response['code'] === 200) ? $response['body'] : [];
     }
 
-    public function store($data)
+    public static function store($data)
     {
-        $url = "{$this->getAdminRealmUrl()}/groups";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/groups";
 
         return curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken(),
+                'Authorization: Bearer '.Container::getAccessToken(),
                 'Content-Type: application/json'
             ),
             'body' => json_encode($data),
         ), 'POST');
     }
 
-    public function update($id, $data)
+    public static function update($id, $data)
     {
-        $url = "{$this->getAdminRealmUrl()}/groups/$id";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/groups/$id";
 
         return curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken(),
+                'Authorization: Bearer '.Container::getAccessToken(),
                 'Content-Type: application/json'
             ),
             'body' => json_encode($data),
         ), 'PUT');
     }
 
-    public function delete($id)
+    public static function delete($id)
     {
-        $url = "{$this->getAdminRealmUrl()}/groups/{$id}";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/groups/{$id}";
 
         return curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken(),
+                'Authorization: Bearer '.Container::getAccessToken(),
                 'Content-Type: application/json'
             ),
         ), 'DELETE');
     }
 
-    public function members($group_id, $params = array())
+    public static function members($id, $params = array())
     {
         $query = isset($params) ? http_build_query($params) : '';
-        $url = $this->getAdminRealmUrl()."/groups/{$group_id}/members?{$query}";
+        $url = Container::getAdminRealmUrl()."/groups/{$id}/members?{$query}";
 
         return curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken()
+                'Authorization: Bearer '.Container::getAccessToken()
             )
         ));
     }
 
-    public function getRoleMappings($group_id)
+    public static function addMember($id, $user_id)
     {
-        $url = "{$this->getBaseUrl()}/admin/realms/{$this->getRealm()}/groups/{$group_id}/role-mappings";
+        $url = Container::getAdminRealmUrl()."/users/{$user_id}/groups/{$id}";
+
+        return curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.Container::getAccessToken()
+            ),
+        ), 'PUT');
+    }
+
+    public static function removeMember($id, $user_id)
+    {
+        $url = Container::getAdminRealmUrl()."/users/{$user_id}/groups/{$id}";
+
+        return curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.Container::getAccessToken()
+            ),
+        ), 'DELETE');
+    }
+
+    public static function getAvailableRoles($id, $client_id)
+    {
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/groups/{$id}/role-mappings/clients/{$client_id}/available";
+
+        $response = curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.Container::getAccessToken()
+            ),
+        ));
+
+        return ($response['code'] === 200) ? $response['body'] : [];
+    }
+
+    public static function getEffectiveRoles($id, $client_id)
+    {
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/groups/{$id}/role-mappings/clients/{$client_id}/composite";
+
+        $response = curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.Container::getAccessToken()
+            ),
+        ));
+
+        return ($response['code'] === 200) ? $response['body'] : [];
+    }
+
+    public static function assignRole($id, $client_id, $roles)
+    {
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/groups/{$id}/role-mappings/clients/{$client_id}";
+
+        return curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.Container::getAccessToken(),
+                'Content-Type: application/json'
+            ),
+            'body' => json_encode($roles),
+        ), 'POST');
+    }
+
+    public static function getAssignedRoles($id, $client_id)
+    {
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/groups/{$id}/role-mappings/clients/{$client_id}";
         
         $response = curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken(),
-                'Content-Type: application/json'
+                'Authorization: Bearer '.Container::getAccessToken()
             ),
-        ), 'GET');
+        ));
 
         return ($response['code'] === 200) ? $response['body'] : [];
+    }
+
+    public static function unassignRole($id, $client_id, $roles)
+    {
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/groups/{$id}/role-mappings/clients/{$client_id}";
+
+        return curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.Container::getAccessToken(),
+                'Content-Type: application/json'
+            ),
+            'body' => json_encode($roles),
+        ), 'DELETE');
     }
 }

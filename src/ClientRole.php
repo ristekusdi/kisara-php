@@ -2,31 +2,33 @@
 
 namespace RistekUSDI\Kisara;
 
-use RistekUSDI\Kisara\Base;
+use RistekUSDI\Kisara\Container;
 
-class ClientRole extends Base
+class ClientRole
 {
-    public function get($client_id, $params)
+    public static function get($client_id, $params = array())
     {
         $query = isset($params) ? http_build_query($params) : '';
-        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}/roles?{$query}";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/clients/{$client_id}/roles?{$query}";
 
         $response = curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken(),
+                'Authorization: Bearer '.Container::getAccessToken(),
             ),
         ));
 
         return ($response['code'] === 200) ? $response['body'] : [];
     }
 
-    public function store($client_id, $data)
+    public static function store($client_id, $data)
     {
-        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}/roles";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/clients/{$client_id}/roles";
 
         return curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken(),
+                'Authorization: Bearer '.Container::getAccessToken(),
                 'Content-Type: application/json'
             ),
             'body' => json_encode($data),
@@ -34,18 +36,19 @@ class ClientRole extends Base
     }
 
     /**
-     * Get users based on client id and role name
+     * Get assigned users to role in client
      * @param $client_id $role_name
      * @return array of users
      */
-    public function getUsers($client_id, $role_name, $params = array())
+    public static function getUsers($client_id, $role_name, $params = array())
     {
         $query = isset($params) ? http_build_query($params) : '';
-        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}/roles/{$role_name}/users?{$query}";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/clients/{$client_id}/roles/{$role_name}/users?{$query}";
 
         $response = curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken(),
+                'Authorization: Bearer '.Container::getAccessToken(),
             ),
         ));
 
@@ -53,18 +56,19 @@ class ClientRole extends Base
     }
 
     /**
-     * Get groups based on client id and role name
+     * Get assigned groups to role in client
      * @param $client_id $role_name
      * @return array of groups
      */
-    public function getGroups($client_id, $role_name, $params = array())
+    public static function getGroups($client_id, $role_name, $params = array())
     {
         $query = isset($params) ? http_build_query($params) : '';
-        $url = "{$this->getAdminRealmUrl()}/clients/{$client_id}/roles/{$role_name}/groups?{$query}";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/clients/{$client_id}/roles/{$role_name}/groups?{$query}";
 
         $response = curl_request($url, array(
             'header' => array(
-                'Authorization: Bearer '.$this->getToken(),
+                'Authorization: Bearer '.Container::getAccessToken(),
             ),
         ));
 
