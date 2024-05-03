@@ -138,11 +138,14 @@ class User
         ), 'POST');
     }
 
-    public static function getAssignRoles($id)
+    public static function getAssignedRoles($id, $client_id = null)
     {
         $base_url = Container::getBaseUrl();
         $realm = Container::getRealm();
         $url = "{$base_url}/admin/realms/{$realm}/users/{$id}/role-mappings";
+        if (!is_null($client_id)) {
+            $url = "{$base_url}/admin/realms/{$realm}/users/{$id}/role-mappings/clients/{$client_id}";
+        }
         
         $response = curl_request($url, array(
             'header' => array(

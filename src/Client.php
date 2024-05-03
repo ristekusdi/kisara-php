@@ -76,7 +76,7 @@ class Client
         ), 'DELETE');
     }
 
-    public function getClientSecret($id)
+    public static function getClientSecret($id)
     {
         $admin_realm_url = Container::getAdminRealmUrl();
         $url = "{$admin_realm_url}/clients/{$id}/client-secret";
@@ -97,7 +97,7 @@ class Client
         return $secret;
     }
 
-    public function updateClientSecret($id)
+    public static function updateClientSecret($id)
     {
         $admin_realm_url = Container::getAdminRealmUrl();
         $url = "{$admin_realm_url}/clients/{$id}/client-secret";
