@@ -93,6 +93,21 @@ class User
         ), 'PUT');
     }
 
+    public static function getRoleMappings($id)
+    {
+        $base_url = Container::getBaseUrl();
+        $realm = Container::getRealm();
+        $url = "{$base_url}/admin/realms/{$realm}/users/{$id}/role-mappings";
+
+        $response = curl_request($url, array(
+            'header' => array(
+                'Authorization: Bearer '.Container::getAccessToken()
+            ),
+        ));
+
+        return ($response['code'] === 200) ? $response['body'] : [];
+    }
+
     public static function getAvailableRoles($id, $client_id)
     {
         $admin_realm_url = Container::getAdminRealmUrl();
