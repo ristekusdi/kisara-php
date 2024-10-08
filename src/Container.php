@@ -59,6 +59,12 @@ class Container {
         return "{$base_realm_url}/protocol/openid-connect/token";
     }
 
+    public static function getRevocationEndpoint()
+    {
+        $base_realm_url = self::getBaseRealmUrl();
+        return "{$base_realm_url}/protocol/openid-connect/revoke";
+    }
+
     public static function setToken($token)
     {
         self::$token = $token;
