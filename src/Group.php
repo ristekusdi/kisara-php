@@ -81,11 +81,13 @@ class Group
         $query = isset($params) ? http_build_query($params) : '';
         $url = Container::getAdminRealmUrl()."/groups/{$id}/members?{$query}";
 
-        return curl_request($url, array(
+        $response = curl_request($url, array(
             'header' => array(
                 'Authorization: Bearer '.Container::getAccessToken()
             )
         ));
+
+        return ($response['code'] === 200) ? $response['body'] : [];
     }
 
     public static function addMember($id, $user_id)
