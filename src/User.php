@@ -79,9 +79,8 @@ class User
 
     public static function resetCredentials($id, $data)
     {
-        $base_url = Container::getBaseUrl();
-        $realm = Container::getRealm();
-        $url = "{$base_url}/admin/realms/{$realm}/users/{$id}/reset-password";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/users/{$id}/reset-password";
         
         return curl_request($url, array(
             'header' => array(
@@ -94,9 +93,8 @@ class User
 
     public static function getRoleMappings($id)
     {
-        $base_url = Container::getBaseUrl();
-        $realm = Container::getRealm();
-        $url = "{$base_url}/admin/realms/{$realm}/users/{$id}/role-mappings";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/users/{$id}/role-mappings";
 
         $response = curl_request($url, array(
             'header' => array(
@@ -154,9 +152,8 @@ class User
 
     public static function getAssignedRoles($id, $client_id = null)
     {
-        $base_url = Container::getBaseUrl();
-        $realm = Container::getRealm();
-        $url = "{$base_url}/admin/realms/{$realm}/users/{$id}/role-mappings";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/admin/realms/{$realm}/users/{$id}/role-mappings";
         if (!is_null($client_id)) {
             $url = "{$base_url}/admin/realms/{$realm}/users/{$id}/role-mappings/clients/{$client_id}";
         }
