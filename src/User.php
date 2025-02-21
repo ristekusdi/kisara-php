@@ -23,9 +23,8 @@ class User
 
     public static function findById($id)
     {
-        $base_url = Container::getBaseUrl();
-        $realm = Container::getRealm();
-        $url = "{$base_url}/admin/realms/{$realm}/users/{$id}";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/users/{$id}";
         
         $response = curl_request($url, array(
             'header' => array(
