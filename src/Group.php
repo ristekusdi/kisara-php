@@ -114,9 +114,8 @@ class Group
 
     public static function getRoleMappings($id)
     {
-        $base_url = Container::getBaseUrl();
-        $realm = Container::getRealm();
-        $url = "{$base_url}/admin/realms/{$realm}/groups/{$id}/role-mappings";
+        $admin_realm_url = Container::getAdminRealmUrl();
+        $url = "{$admin_realm_url}/groups/{$id}/role-mappings";
 
         $response = curl_request($url, array(
             'header' => array(
